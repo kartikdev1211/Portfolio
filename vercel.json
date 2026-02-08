@@ -1,8 +1,9 @@
 {
-    "routes": [
+    "outputDirectory": "build/web",
+    "rewrites": [
         {
-            "src": "/(.*)",
-            "dest": "/index.html"
+            "source": "/(.*)",
+            "destination": "/index.html"
         }
     ]
 }
