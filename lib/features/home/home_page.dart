@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use, unused_field
 
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -177,7 +177,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
-    final isMobile = width < 900;
+
+    // Responsive breakpoints
+    final isMobile = width < 600;
 
     return Scaffold(
       body: Stack(
@@ -227,6 +229,23 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildAboutSection(bool isMobile) {
+    final width = MediaQuery.of(context).size.width;
+    final isTablet = width >= 600 && width < 1200;
+    final isDesktop = width >= 1200;
+
+    final horizontalPadding = isMobile
+        ? 24.0
+        : isTablet
+        ? 60.0
+        : 100.0;
+    final verticalPadding = isMobile ? 60.0 : 100.0;
+    final descFontSize = isMobile
+        ? 14.0
+        : isTablet
+        ? 16.0
+        : 18.0;
+    final statsSpacing = isDesktop ? 60.0 : 40.0;
+
     return AnimatedOpacity(
       opacity: _aboutVisible ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 800),
@@ -239,15 +258,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           key: aboutKey,
           width: double.infinity,
           padding: EdgeInsets.symmetric(
-            horizontal: isMobile ? 24 : 100,
-            vertical: 100,
+            horizontal: horizontalPadding,
+            vertical: verticalPadding,
           ),
           decoration: BoxDecoration(color: Colors.black.withOpacity(0.15)),
           child: Column(
             children: [
               // Header - centered like Projects
               _buildSectionHeader('About Me', 'Experience & Background'),
-              const SizedBox(height: 50),
+              SizedBox(height: isMobile ? 40 : 50),
 
               // ABOUT TEXT - centered with fade-in
               _buildStaggeredItem(
@@ -260,7 +279,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       "I'm a Flutter Developer and Software Engineer with a strong foundation in data structures and cross-platform mobile development. I build scalable, production-ready Flutter applications using Firebase, REST APIs, and modern state management like BLoC and Provider. I have experience working in fast-paced startup environments, delivering clean, high-performance, and user-focused mobile apps while collaborating with designers, backend engineers, and product teams.",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: isMobile ? 16 : 18,
+                        fontSize: descFontSize,
                         color: Colors.white.withOpacity(0.75),
                         height: 1.7,
                       ),
@@ -269,7 +288,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
 
-              const SizedBox(height: 50),
+              SizedBox(height: isMobile ? 40 : 50),
 
               // STATS - centered with staggered animation
               _buildStaggeredItem(
@@ -277,8 +296,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 visible: _aboutVisible,
                 child: Center(
                   child: Wrap(
-                    spacing: 60,
-                    runSpacing: 30,
+                    spacing: isMobile ? 40 : statsSpacing,
+                    runSpacing: isMobile ? 20 : 30,
                     alignment: WrapAlignment.center,
                     children: [
                       _aboutStat('2+', 'Years Experience'),
@@ -290,7 +309,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
               ),
 
-              const SizedBox(height: 60),
+              SizedBox(height: isMobile ? 50 : 60),
 
               // EXPERIENCE TIMELINE - staggered
               Center(
@@ -370,6 +389,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildSkillsSection(bool isMobile) {
+    final width = MediaQuery.of(context).size.width;
+    final isTablet = width >= 600 && width < 1200;
+
+    final horizontalPadding = isMobile
+        ? 24.0
+        : isTablet
+        ? 60.0
+        : 100.0;
+    final verticalPadding = isMobile ? 60.0 : 100.0;
+
     return AnimatedOpacity(
       opacity: _skillsVisible ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 800),
@@ -382,8 +411,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           key: skillsKey,
           width: double.infinity,
           padding: EdgeInsets.symmetric(
-            horizontal: isMobile ? 24 : 100,
-            vertical: 100,
+            horizontal: horizontalPadding,
+            vertical: verticalPadding,
           ),
           child: Column(
             children: [
@@ -391,7 +420,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 'Technical Skills',
                 'Technologies I Work With',
               ),
-              const SizedBox(height: 60),
+              SizedBox(height: isMobile ? 40 : 60),
               _buildSkillsGrid(isMobile),
             ],
           ),
@@ -401,6 +430,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildSkillsGrid(bool isMobile) {
+    final width = MediaQuery.of(context).size.width;
+
     final skills = [
       {
         'name': 'Flutter',
@@ -456,18 +487,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       },
     ];
 
+    // Responsive spacing and sizing
+    final spacing = isMobile
+        ? 12.0
+        : width < 1200
+        ? 16.0
+        : 20.0;
+    final runSpacing = isMobile
+        ? 12.0
+        : width < 1200
+        ? 16.0
+        : 20.0;
+
     return Wrap(
-      spacing: 20,
-      runSpacing: 20,
+      spacing: spacing,
+      runSpacing: runSpacing,
       alignment: WrapAlignment.center,
       children: skills.asMap().entries.map((entry) {
         int index = entry.key;
         var skill = entry.value;
 
         return TweenAnimationBuilder<double>(
-          key: ValueKey(
-            'skill_${skill['name']}_$_skillsVisible',
-          ), // Unique key per skill
+          key: ValueKey('skill_${skill['name']}_$_skillsVisible'),
           tween: Tween(begin: 0.0, end: _skillsVisible ? 1.0 : 0.0),
           duration: Duration(milliseconds: 400 + (index * 50)),
           curve: Curves.easeOut,
@@ -489,11 +530,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildFooter(bool isMobile) {
+    final width = MediaQuery.of(context).size.width;
+    final isTablet = width >= 600 && width < 1200;
+
+    final horizontalPadding = isMobile
+        ? 24.0
+        : isTablet
+        ? 60.0
+        : 100.0;
+    final verticalPadding = isMobile ? 40.0 : 60.0;
+    final titleFontSize = isMobile
+        ? 24.0
+        : isTablet
+        ? 28.0
+        : 36.0;
+    final emailFontSize = isMobile
+        ? 14.0
+        : isTablet
+        ? 18.0
+        : 20.0;
+    final locationFontSize = isMobile
+        ? 12.0
+        : isTablet
+        ? 14.0
+        : 16.0;
+
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 24 : 100,
-        vertical: 60,
+        horizontal: horizontalPadding,
+        vertical: verticalPadding,
       ),
       decoration: BoxDecoration(color: Colors.black.withOpacity(0.3)),
       child: Column(
@@ -502,12 +568,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           Text(
             'Let\'s Connect',
             style: TextStyle(
-              fontSize: isMobile ? 28 : 36,
+              fontSize: titleFontSize,
               fontWeight: FontWeight.w800,
               color: Colors.white,
             ),
           ),
-          const SizedBox(height: 20),
+          SizedBox(height: isMobile ? 16 : 20),
 
           // Email
           InkWell(
@@ -525,14 +591,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             child: Text(
               'kartikkysp12@gmail.com',
               style: TextStyle(
-                fontSize: isMobile ? 16 : 20,
+                fontSize: emailFontSize,
                 color: const Color(0xFF00F5A0),
                 fontWeight: FontWeight.w600,
               ),
             ),
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: isMobile ? 8 : 10),
 
           // Location
           Row(
@@ -540,21 +606,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             children: [
               Icon(
                 Icons.location_on,
-                size: 16,
+                size: isMobile ? 14 : 16,
                 color: Colors.white.withOpacity(0.6),
               ),
               const SizedBox(width: 4),
               Text(
                 'New Delhi, India',
                 style: TextStyle(
-                  fontSize: isMobile ? 14 : 16,
+                  fontSize: locationFontSize,
                   color: Colors.white.withOpacity(0.7),
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 30),
+          SizedBox(height: isMobile ? 24 : 30),
 
           // Social Links
           _buildSocialLinks(),
@@ -564,11 +630,22 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _aboutStat(String value, String label) {
+    final width = MediaQuery.of(context).size.width;
+    final isMobile = width < 600;
+    final isTablet = width >= 600 && width < 1200;
+
+    final valueFontSize = isMobile
+        ? 28.0
+        : isTablet
+        ? 32.0
+        : 34.0;
+    final labelFontSize = isMobile ? 12.0 : 14.0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         TweenAnimationBuilder<int>(
-          key: ValueKey('stat_$label\_$_aboutVisible'), // Unique key per stat
+          key: ValueKey('stat_$label\_$_aboutVisible'),
           tween: IntTween(
             begin: 0,
             end: _aboutVisible
@@ -580,10 +657,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           builder: (context, count, child) {
             return Text(
               value.contains('+') ? '$count+' : '$count',
-              style: const TextStyle(
-                fontSize: 34,
+              style: TextStyle(
+                fontSize: valueFontSize,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF00F5A0),
+                color: const Color(0xFF00F5A0),
               ),
             );
           },
@@ -591,7 +668,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         const SizedBox(height: 6),
         Text(
           label,
-          style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 14),
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.6),
+            fontSize: labelFontSize,
+          ),
         ),
       ],
     );
@@ -602,6 +682,46 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     required String role,
     required String desc,
   }) {
+    final width = MediaQuery.of(context).size.width;
+    final isMobile = width < 600;
+
+    if (isMobile) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              year,
+              style: const TextStyle(
+                color: Color(0xFF00F5A0),
+                fontWeight: FontWeight.w600,
+                fontSize: 12,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              role,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              desc,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.65),
+                height: 1.6,
+                fontSize: 13,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 30),
       child: Row(
@@ -702,13 +822,43 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildHeroSection(bool isMobile) {
+    final width = MediaQuery.of(context).size.width;
+    final isTablet = width >= 600 && width < 1200;
+    final isDesktop = width >= 1200;
+
+    final heroHeight = isMobile
+        ? 700.0
+        : isTablet
+        ? 800.0
+        : 900.0;
+    final horizontalPadding = isMobile
+        ? 24.0
+        : isTablet
+        ? 60.0
+        : 100.0;
+    final titleFontSize = isMobile
+        ? 36.0
+        : isTablet
+        ? 52.0
+        : 72.0;
+    final roleFontSize = isMobile
+        ? 18.0
+        : isTablet
+        ? 24.0
+        : 32.0;
+    final descFontSize = isMobile
+        ? 14.0
+        : isTablet
+        ? 16.0
+        : 18.0;
+
     return Container(
       key: homeKey,
       height: heroHeight,
       width: double.infinity,
       padding: EdgeInsets.symmetric(
-        horizontal: isMobile ? 24 : 100,
-        vertical: 60,
+        horizontal: horizontalPadding,
+        vertical: isMobile ? 40 : 60,
       ),
       child: FadeTransition(
         opacity: _fadeAnimation,
@@ -726,9 +876,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 );
               },
               child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
+                padding: EdgeInsets.symmetric(
+                  horizontal: isMobile ? 12 : 16,
+                  vertical: isMobile ? 6 : 8,
                 ),
                 decoration: BoxDecoration(
                   border: Border.all(
@@ -750,11 +900,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     ),
                     const SizedBox(width: 8),
-                    const Text(
+                    Text(
                       'Available for work',
                       style: TextStyle(
-                        color: Color(0xFF00F5A0),
-                        fontSize: 14,
+                        color: const Color(0xFF00F5A0),
+                        fontSize: isMobile ? 12 : 14,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -763,7 +913,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
 
-            const SizedBox(height: 32),
+            SizedBox(height: isMobile ? 24 : 32),
 
             // Name with enhanced gradient and slide-in animation
             TweenAnimationBuilder<double>(
@@ -782,9 +932,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: Text(
                 'Kartik Kashyap',
                 style: TextStyle(
-                  fontSize: isMobile ? 42 : 72,
+                  fontSize: titleFontSize,
                   fontWeight: FontWeight.w900,
-                  letterSpacing: 1,
+                  letterSpacing: isMobile ? 0 : 1,
                   height: 1.1,
                   foreground: Paint()
                     ..shader = const LinearGradient(
@@ -794,7 +944,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
 
-            const SizedBox(height: 16),
+            SizedBox(height: isMobile ? 12 : 16),
 
             // Role with typing effect style and delay
             TweenAnimationBuilder<double>(
@@ -813,15 +963,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               child: Text(
                 'Flutter Developer',
                 style: TextStyle(
-                  fontSize: isMobile ? 24 : 32,
+                  fontSize: roleFontSize,
                   color: Colors.white.withOpacity(0.9),
                   fontWeight: FontWeight.w600,
-                  letterSpacing: 2,
+                  letterSpacing: isMobile ? 0 : 2,
                 ),
               ),
             ),
 
-            const SizedBox(height: 24),
+            SizedBox(height: isMobile ? 16 : 24),
 
             // Description with fade-in
             TweenAnimationBuilder<double>(
@@ -836,7 +986,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 child: Text(
                   'I build futuristic, high-performance mobile apps with Flutter that scale. Specializing in beautiful UIs, smooth animations, and pixel-perfect designs.',
                   style: TextStyle(
-                    fontSize: isMobile ? 16 : 18,
+                    fontSize: descFontSize,
                     color: Colors.white.withOpacity(0.7),
                     height: 1.7,
                   ),
@@ -844,7 +994,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
             ),
 
-            const SizedBox(height: 40),
+            SizedBox(height: isMobile ? 30 : 40),
 
             // Stats row with staggered animation
             if (!isMobile) ...[
@@ -861,12 +1011,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ),
                   );
                 },
-                child: Row(
+                child: Wrap(
+                  spacing: isDesktop ? 60 : 40,
+                  runSpacing: 20,
                   children: [
                     _buildStatItem('2+', 'Years Experience'),
-                    const SizedBox(width: 60),
                     _buildStatItem('10+', 'Projects & Apps'),
-                    const SizedBox(width: 60),
                     _buildStatItem('3', 'Companies Worked'),
                   ],
                 ),
@@ -880,6 +1030,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildStatItem(String value, String label) {
+    final width = MediaQuery.of(context).size.width;
+    final isTablet = width >= 600 && width < 1200;
+
+    final valueFontSize = isTablet ? 32.0 : 36.0;
+    final labelFontSize = isTablet ? 13.0 : 14.0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -893,10 +1049,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           builder: (context, count, child) {
             return Text(
               value.contains('+') ? '$count+' : '$count',
-              style: const TextStyle(
-                fontSize: 36,
+              style: TextStyle(
+                fontSize: valueFontSize,
                 fontWeight: FontWeight.w800,
-                color: Color(0xFF00F5A0),
+                color: const Color(0xFF00F5A0),
               ),
             );
           },
@@ -904,7 +1060,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         const SizedBox(height: 4),
         Text(
           label,
-          style: TextStyle(fontSize: 14, color: Colors.white.withOpacity(0.6)),
+          style: TextStyle(
+            fontSize: labelFontSize,
+            color: Colors.white.withOpacity(0.6),
+          ),
         ),
       ],
     );
@@ -959,6 +1118,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildProjectsSection(bool isMobile) {
+    final width = MediaQuery.of(context).size.width;
+    final isTablet = width >= 600 && width < 1200;
+
+    final horizontalPadding = isMobile
+        ? 24.0
+        : isTablet
+        ? 60.0
+        : 100.0;
+    final verticalPadding = isMobile ? 60.0 : 100.0;
+
     return AnimatedOpacity(
       opacity: _projectsVisible ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 800),
@@ -971,14 +1140,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           key: projectsKey,
           width: double.infinity,
           padding: EdgeInsets.symmetric(
-            horizontal: isMobile ? 24 : 100,
-            vertical: 100,
+            horizontal: horizontalPadding,
+            vertical: verticalPadding,
           ),
           decoration: BoxDecoration(color: Colors.black.withOpacity(0.15)),
           child: Column(
             children: [
               _buildSectionHeader('Featured Projects', 'My Recent Work'),
-              const SizedBox(height: 60),
+              SizedBox(height: isMobile ? 40 : 60),
               _buildProjectGrid(isMobile),
             ],
           ),
@@ -988,12 +1157,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildSectionHeader(String title, String subtitle) {
+    final width = MediaQuery.of(context).size.width;
+    final isMobile = width < 600;
+    final isTablet = width >= 600 && width < 1200;
+
+    final subtitleFontSize = isMobile
+        ? 12.0
+        : isTablet
+        ? 14.0
+        : 16.0;
+    final titleFontSize = isMobile
+        ? 32.0
+        : isTablet
+        ? 40.0
+        : 48.0;
+
     return Column(
       children: [
         Text(
           subtitle,
           style: TextStyle(
-            fontSize: 16,
+            fontSize: subtitleFontSize,
             color: const Color(0xFF00F5A0),
             fontWeight: FontWeight.w600,
             letterSpacing: 2,
@@ -1002,8 +1186,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         const SizedBox(height: 12),
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 48,
+          style: TextStyle(
+            fontSize: titleFontSize,
             fontWeight: FontWeight.w800,
             color: Colors.white,
           ),
@@ -1024,6 +1208,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget _buildProjectGrid(bool isMobile) {
+    final width = MediaQuery.of(context).size.width;
+
+    int crossAxisCount;
+    double aspectRatio;
+    double spacing;
+
+    // More responsive breakpoints
+    if (width < 600) {
+      crossAxisCount = 1;
+      aspectRatio = 0.85;
+      spacing = 16;
+    } else if (width < 900) {
+      crossAxisCount = 2;
+      aspectRatio = 0.95;
+      spacing = 18;
+    } else if (width < 1200) {
+      crossAxisCount = 2;
+      aspectRatio = 1.0;
+      spacing = 20;
+    } else {
+      crossAxisCount = 3;
+      aspectRatio = 1.05;
+      spacing = 24;
+    }
+
     final projects = [
       {
         'title': 'Cloutin – Influencer Marketing Platform',
@@ -1052,40 +1261,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: isMobile ? 1 : 3,
-        crossAxisSpacing: 24,
-        mainAxisSpacing: 24,
-        childAspectRatio: 0.95,
+        crossAxisCount: crossAxisCount,
+        crossAxisSpacing: spacing,
+        mainAxisSpacing: spacing,
+        childAspectRatio: aspectRatio,
       ),
       itemCount: projects.length,
       itemBuilder: (context, index) {
         final project = projects[index];
 
-        return TweenAnimationBuilder<double>(
-          key: ValueKey(
-            'project_$index\_$_projectsVisible',
-          ), // Unique key per project
-          tween: Tween(begin: 0.0, end: _projectsVisible ? 1.0 : 0.0),
-          duration: Duration(milliseconds: 600 + (index * 150)),
-          curve: Curves.easeOut,
-          builder: (context, value, child) {
-            return Opacity(
-              opacity: value,
-              child: Transform.translate(
-                offset: Offset(0, 50 * (1 - value)),
-                child: Transform.scale(
-                  scale: 0.9 + (0.1 * value),
-                  child: child,
-                ),
-              ),
-            );
-          },
-          child: ProjectCard(
-            title: project['title'] as String,
-            description: project['description'] as String,
-            tech: project['tech'] as List<String>,
-            isMobile: isMobile,
-          ),
+        return ProjectCard(
+          title: project['title'] as String,
+          description: project['description'] as String,
+          tech: project['tech'] as List<String>,
+          isMobile: width < 600,
         );
       },
     );
@@ -1138,6 +1327,20 @@ class _SkillCardState extends State<_SkillCard>
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final isMobile = width < 600;
+    final isTablet = width >= 600 && width < 1200;
+
+    final cardSize = isMobile
+        ? 140.0
+        : isTablet
+        ? 155.0
+        : 160.0;
+    final padding = isMobile ? 20.0 : 24.0;
+    final iconSize = isMobile ? 36.0 : 40.0;
+    final textSize = isMobile ? 13.0 : 15.0;
+    final borderRadius = isMobile ? 14.0 : 16.0;
+
     return MouseRegion(
       onEnter: (_) {
         setState(() => _isHovered = true);
@@ -1150,13 +1353,16 @@ class _SkillCardState extends State<_SkillCard>
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeInOut,
-        width: widget.isMobile ? 150 : 160,
-        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+        width: cardSize,
+        padding: EdgeInsets.symmetric(
+          vertical: padding,
+          horizontal: padding - 4,
+        ),
         decoration: BoxDecoration(
           color: _isHovered
               ? widget.color.withOpacity(0.1)
               : Colors.white.withOpacity(0.05),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(borderRadius),
           border: Border.all(
             color: _isHovered
                 ? widget.color.withOpacity(0.5)
@@ -1189,7 +1395,7 @@ class _SkillCardState extends State<_SkillCard>
               },
               child: Icon(
                 widget.icon,
-                size: 40,
+                size: iconSize,
                 color: _isHovered ? widget.color : Colors.white,
               ),
             ),
@@ -1198,7 +1404,7 @@ class _SkillCardState extends State<_SkillCard>
               widget.name,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 15,
+                fontSize: textSize,
                 fontWeight: FontWeight.w600,
                 color: _isHovered ? widget.color : Colors.white,
               ),

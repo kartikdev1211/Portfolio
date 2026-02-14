@@ -7,6 +7,7 @@ class ProjectCard extends StatefulWidget {
   final bool isMobile;
 
   const ProjectCard({
+    super.key,
     required this.title,
     required this.description,
     required this.tech,
@@ -22,16 +23,48 @@ class ProjectCardState extends State<ProjectCard> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
+    // Responsive breakpoints
+    final isMobile = width < 600;
+    final isTablet = width >= 600 && width < 1200;
+
+    // Responsive sizing
+    double cardPadding = isMobile
+        ? 20
+        : isTablet
+        ? 24
+        : 30;
+    double titleFontSize = isMobile
+        ? 18
+        : isTablet
+        ? 20
+        : 24;
+    double descFontSize = isMobile
+        ? 13
+        : isTablet
+        ? 14
+        : 15;
+    double techFontSize = isMobile
+        ? 11
+        : isTablet
+        ? 11
+        : 12;
+    double iconSize = isMobile ? 50 : 60;
+    double iconIconSize = isMobile ? 24 : 30;
+    double spacing = isMobile ? 16 : 24;
+    double borderRadius = isMobile ? 16 : 20;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
-        width: widget.isMobile ? double.infinity : 350,
-        padding: const EdgeInsets.all(30),
+        width: isMobile ? double.infinity : null,
+        padding: EdgeInsets.all(cardPadding),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(_isHovered ? 0.08 : 0.05),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(borderRadius),
           border: Border.all(
             color: _isHovered
                 ? const Color(0xFF00F5A0).withOpacity(0.5)
@@ -52,25 +85,25 @@ class ProjectCardState extends State<ProjectCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              width: 60,
-              height: 60,
+              width: iconSize,
+              height: iconSize,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [Color(0xFF00F5A0), Color(0xFF00D9F5)],
                 ),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.phone_android,
                 color: Colors.white,
-                size: 30,
+                size: iconIconSize,
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: spacing),
             Text(
               widget.title,
-              style: const TextStyle(
-                fontSize: 24,
+              style: TextStyle(
+                fontSize: titleFontSize,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
               ),
@@ -79,20 +112,20 @@ class ProjectCardState extends State<ProjectCard> {
             Text(
               widget.description,
               style: TextStyle(
-                fontSize: 15,
+                fontSize: descFontSize,
                 color: Colors.white.withOpacity(0.7),
                 height: 1.6,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: spacing - 4),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: isMobile ? 6 : 8,
+              runSpacing: isMobile ? 6 : 8,
               children: widget.tech.map((tech) {
                 return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
+                  padding: EdgeInsets.symmetric(
+                    horizontal: isMobile ? 10 : 12,
+                    vertical: isMobile ? 5 : 6,
                   ),
                   decoration: BoxDecoration(
                     color: const Color(0xFF00F5A0).withOpacity(0.1),
@@ -103,9 +136,9 @@ class ProjectCardState extends State<ProjectCard> {
                   ),
                   child: Text(
                     tech,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF00F5A0),
+                    style: TextStyle(
+                      fontSize: techFontSize,
+                      color: const Color(0xFF00F5A0),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
