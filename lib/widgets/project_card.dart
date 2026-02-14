@@ -23,131 +23,182 @@ class ProjectCardState extends State<ProjectCard> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final parentWidth = MediaQuery.of(context).size.width;
 
-    // Responsive breakpoints
-    final isMobile = width < 600;
-    final isTablet = width >= 600 && width < 1200;
+        // Responsive sizing based on actual screen width
+        double cardPadding;
+        double titleFontSize;
+        double descFontSize;
+        double techFontSize;
+        double iconSize;
+        double iconIconSize;
+        double spacing;
+        double borderRadius;
 
-    // Responsive sizing
-    double cardPadding = isMobile
-        ? 20
-        : isTablet
-        ? 24
-        : 30;
-    double titleFontSize = isMobile
-        ? 18
-        : isTablet
-        ? 20
-        : 24;
-    double descFontSize = isMobile
-        ? 13
-        : isTablet
-        ? 14
-        : 15;
-    double techFontSize = isMobile
-        ? 11
-        : isTablet
-        ? 11
-        : 12;
-    double iconSize = isMobile ? 50 : 60;
-    double iconIconSize = isMobile ? 24 : 30;
-    double spacing = isMobile ? 16 : 24;
-    double borderRadius = isMobile ? 16 : 20;
+        if (parentWidth < 400) {
+          // Extra small mobile
+          cardPadding = 16;
+          titleFontSize = 16;
+          descFontSize = 12;
+          techFontSize = 10;
+          iconSize = 45;
+          iconIconSize = 22;
+          spacing = 14;
+          borderRadius = 14;
+        } else if (parentWidth < 600) {
+          // Small mobile
+          cardPadding = 20;
+          titleFontSize = 18;
+          descFontSize = 13;
+          techFontSize = 11;
+          iconSize = 50;
+          iconIconSize = 24;
+          spacing = 16;
+          borderRadius = 16;
+        } else if (parentWidth < 900) {
+          // Large mobile / small tablet
+          cardPadding = 22;
+          titleFontSize = 19;
+          descFontSize = 13.5;
+          techFontSize = 11;
+          iconSize = 55;
+          iconIconSize = 26;
+          spacing = 20;
+          borderRadius = 18;
+        } else if (parentWidth < 1200) {
+          // Tablet
+          cardPadding = 24;
+          titleFontSize = 20;
+          descFontSize = 14;
+          techFontSize = 11;
+          iconSize = 58;
+          iconIconSize = 28;
+          spacing = 22;
+          borderRadius = 19;
+        } else {
+          // Desktop
+          cardPadding = 30;
+          titleFontSize = 24;
+          descFontSize = 15;
+          techFontSize = 12;
+          iconSize = 60;
+          iconIconSize = 30;
+          spacing = 24;
+          borderRadius = 20;
+        }
 
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: isMobile ? double.infinity : null,
-        padding: EdgeInsets.all(cardPadding),
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(_isHovered ? 0.08 : 0.05),
-          borderRadius: BorderRadius.circular(borderRadius),
-          border: Border.all(
-            color: _isHovered
-                ? const Color(0xFF00F5A0).withOpacity(0.5)
-                : Colors.white.withOpacity(0.1),
-            width: 2,
-          ),
-          boxShadow: _isHovered
-              ? [
-                  BoxShadow(
-                    color: const Color(0xFF00F5A0).withOpacity(0.2),
-                    blurRadius: 20,
-                    spreadRadius: 2,
-                  ),
-                ]
-              : [],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: iconSize,
-              height: iconSize,
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF00F5A0), Color(0xFF00D9F5)],
-                ),
-                borderRadius: BorderRadius.circular(12),
+        return MouseRegion(
+          onEnter: (_) => setState(() => _isHovered = true),
+          onExit: (_) => setState(() => _isHovered = false),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            width: constraints.maxWidth,
+            padding: EdgeInsets.all(cardPadding),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(_isHovered ? 0.08 : 0.05),
+              borderRadius: BorderRadius.circular(borderRadius),
+              border: Border.all(
+                color: _isHovered
+                    ? const Color(0xFF00F5A0).withOpacity(0.5)
+                    : Colors.white.withOpacity(0.1),
+                width: 2,
               ),
-              child: Icon(
-                Icons.phone_android,
-                color: Colors.white,
-                size: iconIconSize,
-              ),
+              boxShadow: _isHovered
+                  ? [
+                      BoxShadow(
+                        color: const Color(0xFF00F5A0).withOpacity(0.2),
+                        blurRadius: 20,
+                        spreadRadius: 2,
+                      ),
+                    ]
+                  : [],
             ),
-            SizedBox(height: spacing),
-            Text(
-              widget.title,
-              style: TextStyle(
-                fontSize: titleFontSize,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              widget.description,
-              style: TextStyle(
-                fontSize: descFontSize,
-                color: Colors.white.withOpacity(0.7),
-                height: 1.6,
-              ),
-            ),
-            SizedBox(height: spacing - 4),
-            Wrap(
-              spacing: isMobile ? 6 : 8,
-              runSpacing: isMobile ? 6 : 8,
-              children: widget.tech.map((tech) {
-                return Container(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isMobile ? 10 : 12,
-                    vertical: isMobile ? 5 : 6,
-                  ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Icon
+                Container(
+                  width: iconSize,
+                  height: iconSize,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF00F5A0).withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                    border: Border.all(
-                      color: const Color(0xFF00F5A0).withOpacity(0.3),
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF00F5A0), Color(0xFF00D9F5)],
                     ),
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                  child: Icon(
+                    Icons.phone_android,
+                    color: Colors.white,
+                    size: iconIconSize,
+                  ),
+                ),
+                SizedBox(height: spacing),
+
+                // Title
+                Text(
+                  widget.title,
+                  style: TextStyle(
+                    fontSize: titleFontSize,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                    height: 1.2,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: spacing * 0.5),
+
+                // Description
+                Flexible(
                   child: Text(
-                    tech,
+                    widget.description,
                     style: TextStyle(
-                      fontSize: techFontSize,
-                      color: const Color(0xFF00F5A0),
-                      fontWeight: FontWeight.w600,
+                      fontSize: descFontSize,
+                      color: Colors.white.withOpacity(0.7),
+                      height: 1.6,
                     ),
+                    maxLines: parentWidth < 600 ? 4 : 5,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                );
-              }).toList(),
+                ),
+                SizedBox(height: spacing - 4),
+
+                // Tech tags
+                Wrap(
+                  spacing: parentWidth < 600 ? 6 : 8,
+                  runSpacing: parentWidth < 600 ? 6 : 8,
+                  children: widget.tech.map((tech) {
+                    return Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: parentWidth < 600 ? 10 : 12,
+                        vertical: parentWidth < 600 ? 5 : 6,
+                      ),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF00F5A0).withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: const Color(0xFF00F5A0).withOpacity(0.3),
+                        ),
+                      ),
+                      child: Text(
+                        tech,
+                        style: TextStyle(
+                          fontSize: techFontSize,
+                          color: const Color(0xFF00F5A0),
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }
